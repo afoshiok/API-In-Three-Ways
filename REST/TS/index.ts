@@ -8,12 +8,18 @@ const app: Express = express();
 const port = process.env.PORT;
 
 const prisma = new PrismaClient()
+app.use(express.json())
+
 
 //GET REQUESTS
 
 //GET all Barbers
 app.get("/barber", async (req: Request, res: Response) => {
+    await prisma.$connect() //Connects to the API to Prisma client
     const barbers = await prisma.barber.findMany()
+    .then(async () => {
+        await prisma.$disconnect()
+    })
     res.json(barbers)
 })
 
