@@ -9,3 +9,45 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+//Enum Values
+enum BarberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+//Table Models
+model Barber {
+  id  Int @id @default(autoincrement())
+  barberFirstName String?
+  barberLastName  String?
+  barberPhoneNum  String? @db.VarChar(22) //A VARCHAR value to account for numbers formated like: "xxx-xxx-xxxx"
+  barberStatus  BarberStatus //Can either be "ACTIVE" or "INACTIVE"
+  appointments Appointment[]  
+}
+
+model Customer {
+  id  Int @id @default(autoincrement())
+  custFirstName String? @db.VarChar(25)
+  custLastName  String? @db.VarChar(25)
+  custPhoneNum  String? @db.VarChar(22)
+  appointments Appointment[]
+}
+
+model Service {
+  id  Int @id @default(autoincrement())
+  serviceName String
+  servicePrice  Decimal?  @db.Decimal(5,2) //Price cannot have more than 5 digits with 2 being taken up by decimals. SOURCE: https://www.sqlshack.com/understanding-sql-decimal-data-type/
+  appointments Appointment[]
+}
+
+model Appointment {
+  id Int @id @default(autoincrement())
+  customer  Customer @relation(fields: [custId], references: [id])
+  custId Int
+  barber  Barber  @relation(fields: [barberId], references: [id])
+  barberId  Int
+  apptTime DateTime?
+  service Service @relation(fields: [serviceId], references: [id])
+  serviceId Int
+}
