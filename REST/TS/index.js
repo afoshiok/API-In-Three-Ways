@@ -30,6 +30,19 @@ app.get("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }));
     res.json(barbers);
 }));
+app.get("/barber/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // await prisma.$connect() //Connects to the API to Prisma client
+    const { id } = req.params;
+    try {
+        const barber_info = yield prisma.barber.findUnique({
+            where: { id: Number(id) }
+        });
+        res.json(barber_info);
+    }
+    catch (error) {
+        res.json({ error: `Post with ID ${id} does not exist in the database` });
+    }
+}));
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`);
 });
