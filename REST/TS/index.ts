@@ -17,9 +17,6 @@ app.use(express.json())
 app.get("/barber", async (req: Request, res: Response) => {
     await prisma.$connect() //Connects to the API to Prisma client
     const barbers = await prisma.barber.findMany()
-    .then(async () => {
-        await prisma.$disconnect() //Disconnects Prisma client 
-    })
     res.json(barbers)
 })
 
@@ -30,8 +27,6 @@ app.get("/barber/:id", async (req: Request, res: Response) => {
     try {
         const barber_info = await prisma.barber.findUnique({  //Equivalent to "SELECT * FROM BARBER WHERE id = <req.params>"
             where: { id : Number(id) }
-        }).then(async () => {
-            await prisma.$disconnect() 
         })
         res.json(barber_info)
     }
@@ -44,9 +39,6 @@ app.get("/barber/:id", async (req: Request, res: Response) => {
 app.get("/customer", async (req: Request, res: Response) => {
     await prisma.$connect()
     const customers = await prisma.customer.findMany()
-    .then(async () => {
-        await prisma.$disconnect()
-    })
     res.json(customers)
 })
 
@@ -71,7 +63,27 @@ app.get("/customer/:id", async (req: Request, res: Response) => {
 //POST REQUESTS
 
 //POST add barber to database
-app.post("/barber")
+app.post("/barber",async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const barber_info = {  //All of this will go in your request body
+        barberFirstName: req.body.barberFirstName,
+        barberLastName: req.body.barberLastName,
+        barberPhoneNum: req.body.barberPhoneNum,
+        barberStatus: req.body.barberStatus, //Remember from schema.prisma, it can only be "ACTIVE" or "INACTIVE"
+    }
+
+    await prisma.barber.create({
+        data: barber_info
+    }).then()
+    
+    .catch(async (e) => {
+        console.error(e)
+        await prisma.$disconnect()
+        process.exit(1)
+      })
+
+    res.send(`Barber has been added to the database!`)
+})
 
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`)
