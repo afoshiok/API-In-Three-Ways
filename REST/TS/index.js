@@ -26,21 +26,49 @@ app.get("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     yield prisma.$connect(); //Connects to the API to Prisma client
     const barbers = yield prisma.barber.findMany()
         .then(() => __awaiter(void 0, void 0, void 0, function* () {
-        yield prisma.$disconnect();
+        yield prisma.$disconnect(); //Disconnects Prisma client 
     }));
     res.json(barbers);
 }));
+//GET Barber by ID
 app.get("/barber/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // await prisma.$connect() //Connects to the API to Prisma client
+    yield prisma.$connect(); //Connects to the API to Prisma client
     const { id } = req.params;
     try {
         const barber_info = yield prisma.barber.findUnique({
             where: { id: Number(id) }
-        });
+        }).then(() => __awaiter(void 0, void 0, void 0, function* () {
+            yield prisma.$disconnect();
+        }));
         res.json(barber_info);
     }
     catch (error) {
-        res.json({ error: `Post with ID ${id} does not exist in the database` });
+        res.json({ error: `Barber with ID: ${id} does not exist in this database` });
+    }
+}));
+//GET all Customers
+app.get("/customer", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const customers = yield prisma.customer.findMany()
+        .then(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield prisma.$disconnect();
+    }));
+    res.json(customers);
+}));
+//GET Customer by ID
+app.get("/customer/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const { id } = req.params;
+    try {
+        const cust_info = yield prisma.customer.findUnique({
+            where: { id: Number(id) }
+        }).then(() => __awaiter(void 0, void 0, void 0, function* () {
+            yield prisma.$disconnect();
+        }));
+        res.json(cust_info);
+    }
+    catch (error) {
+        res.json({ error: `${id} does not exist in this database` });
     }
 }));
 app.listen(port, () => {
