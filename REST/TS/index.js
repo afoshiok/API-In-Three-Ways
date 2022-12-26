@@ -24,7 +24,7 @@ app.use(express_1.default.json());
 //GET all Barbers
 app.get("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.$connect(); //Connects to the API to Prisma client
-    const barbers = yield prisma.barber.findMany();
+    const barbers = yield prisma.barber.findMany(); //Equivalent to "SELECT * FROM BARBER"
     res.json(barbers);
 }));
 //GET Barber by ID
@@ -63,6 +63,12 @@ app.get("/customer/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.json({ error: `${id} does not exist in this database` });
     }
 }));
+//GET all Services
+app.get("/service", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const services = yield prisma.service.findMany();
+    res.json(services);
+}));
 //POST REQUESTS
 //POST add barber to database
 app.post("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -76,12 +82,16 @@ app.post("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     yield prisma.barber.create({
         data: barber_info
     }).then()
+        //FIXME: error handling doesn't work, callback hell situation
         .catch((e) => __awaiter(void 0, void 0, void 0, function* () {
-        console.error(e);
-        yield prisma.$disconnect();
-        process.exit(1);
+        if (e) {
+            res.send(e);
+        }
+        else {
+            res.send(`Barber has been added to the database!`);
+            yield prisma.$disconnect();
+        }
     }));
-    res.send(`Barber has been added to the database!`);
 }));
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`);

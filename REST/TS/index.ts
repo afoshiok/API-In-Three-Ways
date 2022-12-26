@@ -16,7 +16,7 @@ app.use(express.json())
 //GET all Barbers
 app.get("/barber", async (req: Request, res: Response) => {
     await prisma.$connect() //Connects to the API to Prisma client
-    const barbers = await prisma.barber.findMany()
+    const barbers = await prisma.barber.findMany()  //Equivalent to "SELECT * FROM BARBER"
     res.json(barbers)
 })
 
@@ -59,6 +59,13 @@ app.get("/customer/:id", async (req: Request, res: Response) => {
     }
 })
 
+//GET all Services
+app.get("/service", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const services = await prisma.service.findMany()
+    res.json(services)
+})
+
 
 //POST REQUESTS
 
@@ -75,14 +82,18 @@ app.post("/barber",async (req: Request, res: Response) => {
     await prisma.barber.create({
         data: barber_info
     }).then()
-    
-    .catch(async (e) => {
-        console.error(e)
-        await prisma.$disconnect()
-        process.exit(1)
-      })
 
-    res.send(`Barber has been added to the database!`)
+//FIXME: error handling doesn't work, "callback hell" situation
+    .catch(async (e) => {
+        if (e) {
+            res.send(e)
+        }
+        else{
+            res.send(`Barber has been added to the database!`)
+            await prisma.$disconnect()
+        }
+      })
+    
 })
 
 app.listen(port, () => {
