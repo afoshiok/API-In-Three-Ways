@@ -109,6 +109,24 @@ app.post("/customer", async (req: Request, res: Response) => {
     })
 })
 
+app.post("/service", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const service_info = {
+        serviceName: req.body.serviceName,
+        servicePrice: req.body.servicePrice
+    }
+
+    await prisma.service.create({
+        data: service_info
+    }).then(() => {
+        res.send("Service add to database!")
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
+})
+
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`)
 })
