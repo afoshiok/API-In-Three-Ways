@@ -81,17 +81,14 @@ app.post("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     };
     yield prisma.barber.create({
         data: barber_info
-    }).then()
-        //FIXME: error handling doesn't work, callback hell situation
-        .catch((e) => __awaiter(void 0, void 0, void 0, function* () {
-        if (e) {
-            res.send(e);
-        }
-        else {
-            res.send(`Barber has been added to the database!`);
-            yield prisma.$disconnect();
-        }
-    }));
+    }).then(() => {
+        res.send("Barber added to database!");
+    })
+        //FIXME: error handling doesn't work, "callback hell" situation
+        .catch((error) => {
+        console.error(error);
+        res.send("Error encountered, check your terminal");
+    });
 }));
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`);

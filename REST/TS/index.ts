@@ -81,19 +81,14 @@ app.post("/barber",async (req: Request, res: Response) => {
 
     await prisma.barber.create({
         data: barber_info
-    }).then()
-
-//FIXME: error handling doesn't work, "callback hell" situation
-    .catch(async (e) => {
-        if (e) {
-            res.send(e)
-        }
-        else{
-            res.send(`Barber has been added to the database!`)
-            await prisma.$disconnect()
-        }
-      })
-    
+    }).then(() => {
+        res.send("Barber added to database!")
+    })
+    //ERROR HANDLING
+    .catch((error) => {
+        console.error(error)
+        res.send("Error encountered, check your terminal")
+    })
 })
 
 app.listen(port, () => {
