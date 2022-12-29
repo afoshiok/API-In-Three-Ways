@@ -79,7 +79,7 @@ app.post("/barber",async (req: Request, res: Response) => {
         barberStatus: req.body.barberStatus, //Remember from schema.prisma, it can only be "ACTIVE" or "INACTIVE"
     }
 
-    await prisma.barber.create({
+    await prisma.barber.create({  //IN SQL: "INSERT INTO Barber VALUES (barber_info)"
         data: barber_info
     }).then(() => {
         res.send("Barber added to database!")
@@ -87,7 +87,27 @@ app.post("/barber",async (req: Request, res: Response) => {
     //ERROR HANDLING
     .catch((error) => {
         console.error(error)
-        res.send("Error encountered, check your terminal")
+        res.send("Error encountered, check your terminal for more info")
+    })
+})
+
+//POST add customer
+app.post("/customer", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const cust_info = {
+        custFirstName: req.body.custFirstName,
+        custLastName: req.body.custLastName,
+        custPhoneNum: req.body.custPhoneNum
+    }
+
+    await prisma.customer.create({
+        data: cust_info
+    }).then(() => {
+        res.send("Customer added to database!")
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
     })
 })
 

@@ -84,10 +84,28 @@ app.post("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }).then(() => {
         res.send("Barber added to database!");
     })
-        //FIXME: error handling doesn't work, "callback hell" situation
+        //ERROR HANDLING
         .catch((error) => {
         console.error(error);
-        res.send("Error encountered, check your terminal");
+        res.send("Error encountered, check your terminal for more info");
+    });
+}));
+//POST add customer
+app.post("/customer", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const cust_info = {
+        custFirstName: req.body.custFirstName,
+        custLastName: req.body.custLastName,
+        custPhoneNum: req.body.custPhoneNum
+    };
+    yield prisma.customer.create({
+        data: cust_info
+    }).then(() => {
+        res.send("Customer added to database!");
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
     });
 }));
 app.listen(port, () => {
