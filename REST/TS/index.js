@@ -67,6 +67,19 @@ app.get("/service", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const services = yield prisma.service.findMany();
     res.json(services);
 }));
+app.get("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect;
+    const { id } = req.params;
+    try {
+        const service_info = yield prisma.service.findUnique({
+            where: { id: Number(id) }
+        });
+        res.json(service_info);
+    }
+    catch (error) {
+        res.json({ error: `${id} does not exist in this database` });
+    }
+}));
 //POST REQUESTS
 //POST add barber to database
 app.post("/barber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

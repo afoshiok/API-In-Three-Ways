@@ -64,6 +64,20 @@ app.get("/service", async (req: Request, res: Response) => {
     res.json(services)
 })
 
+app.get("/service/:id", async (req: Request, res: Response) => {
+    await prisma.$connect
+    const { id } = req.params
+    try {
+        const service_info = await prisma.service.findUnique({
+            where: { id : Number(id) }
+        })
+        res.json(service_info)
+    }
+    catch (error){
+        res.json({error: `${id} does not exist in this database`})
+    }
+})
+
 
 //POST REQUESTS
 
