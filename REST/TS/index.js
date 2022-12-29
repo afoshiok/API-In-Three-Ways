@@ -67,6 +67,7 @@ app.get("/service", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const services = yield prisma.service.findMany();
     res.json(services);
 }));
+//GET Service by ID
 app.get("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.$connect;
     const { id } = req.params;
@@ -79,6 +80,11 @@ app.get("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         res.json({ error: `${id} does not exist in this database` });
     }
+}));
+app.get("/appointment", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect;
+    const appointments = yield prisma.appointment.findMany();
+    res.json(appointments);
 }));
 //POST REQUESTS
 //POST add barber to database
@@ -119,6 +125,7 @@ app.post("/customer", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.send("Error encountered, check terminal for more info");
     });
 }));
+//POST add service
 app.post("/service", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.$connect();
     const service_info = {
@@ -129,6 +136,24 @@ app.post("/service", (req, res) => __awaiter(void 0, void 0, void 0, function* (
         data: service_info
     }).then(() => {
         res.send("Service add to database!");
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
+    });
+}));
+app.post("/appointment", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const appointment_info = {
+        custId: req.body.custId,
+        barberId: req.body.barberId,
+        apptTime: new Date(req.body.apptTime),
+        serviceId: req.body.serviceId
+    };
+    yield prisma.appointment.create({
+        data: appointment_info
+    }).then(() => {
+        res.send("Appointment added to database!");
     })
         .catch((error) => {
         console.log(error);

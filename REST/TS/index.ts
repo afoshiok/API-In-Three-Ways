@@ -64,6 +64,7 @@ app.get("/service", async (req: Request, res: Response) => {
     res.json(services)
 })
 
+//GET Service by ID
 app.get("/service/:id", async (req: Request, res: Response) => {
     await prisma.$connect
     const { id } = req.params
@@ -78,7 +79,11 @@ app.get("/service/:id", async (req: Request, res: Response) => {
     }
 })
 
-
+app.get("/appointment", async (req: Request, res: Response) => {
+    await prisma.$connect
+    const appointments = await prisma.appointment.findMany()
+    res.json(appointments)
+})
 //POST REQUESTS
 
 //POST add barber to database
@@ -123,6 +128,7 @@ app.post("/customer", async (req: Request, res: Response) => {
     })
 })
 
+//POST add service
 app.post("/service", async (req: Request, res: Response) => {
     await prisma.$connect()
     const service_info = {
@@ -134,6 +140,26 @@ app.post("/service", async (req: Request, res: Response) => {
         data: service_info
     }).then(() => {
         res.send("Service add to database!")
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
+})
+
+app.post("/appointment", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const appointment_info = {
+        custId : req.body.custId,
+        barberId : req.body.barberId,
+        apptTime: new Date(req.body.apptTime), //Adds the time to the db in "YYYY-MM-DD HH:MM:SS" format but uses ISO-8601 for GET /appointment
+        serviceId: req.body.serviceId
+    }
+
+    await prisma.appointment.create({
+        data: appointment_info
+    }).then(() => {
+        res.send("Appointment added to database!")
     })
     .catch((error) => {
         console.log(error)
