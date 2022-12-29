@@ -54,9 +54,7 @@ app.get("/customer/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const cust_info = yield prisma.customer.findUnique({
             where: { id: Number(id) }
-        }).then(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield prisma.$disconnect();
-        }));
+        });
         res.json(cust_info);
     }
     catch (error) {

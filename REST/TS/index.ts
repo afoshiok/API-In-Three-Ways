@@ -49,8 +49,6 @@ app.get("/customer/:id", async (req: Request, res: Response) => {
     try {
         const cust_info = await prisma.customer.findUnique({  //Equivalent to "SELECT * FROM CUSTOMER WHERE id = <req.params>"
             where: { id : Number(id) }
-        }).then(async () => {
-            await prisma.$disconnect() 
         })
         res.json(cust_info)
     }
