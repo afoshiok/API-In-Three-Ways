@@ -147,6 +147,7 @@ app.post("/service", async (req: Request, res: Response) => {
     })
 })
 
+//POST add appointment
 app.post("/appointment", async (req: Request, res: Response) => {
     await prisma.$connect()
     const appointment_info = {
@@ -169,8 +170,26 @@ app.post("/appointment", async (req: Request, res: Response) => {
 
 //PUT REQUESTS
 
+//PUT update barber
 app.put("/barber/:id", async (req: Request, res: Response) => {
     await prisma.$connect()
+    const { id } = req.params
+    const barber_data = {
+        barberFirstName: req.body.barberFirstName,
+        barberLastName: req.body.barberLastName,
+        barberPhoneNum: req.body.barberPhoneNum,
+        barberStatus: req.body.barberStatus, //Remember from schema.prisma, it can only be "ACTIVE" or "INACTIVE"
+    }
+    const updateBarber = await prisma.barber.update({
+        where: {id: Number(id)}, //Finds barber by ID 
+        data: barber_data //Updates the data based on request body
+    }).then(() => {
+        res.send(`Barber ID: ${id} has been updated`)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
 })
 
 app.listen(port, () => {

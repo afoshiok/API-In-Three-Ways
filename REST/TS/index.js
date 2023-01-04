@@ -69,7 +69,7 @@ app.get("/service", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 }));
 //GET Service by ID
 app.get("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma.$connect;
+    yield prisma.$connect();
     const { id } = req.params;
     try {
         const service_info = yield prisma.service.findUnique({
@@ -82,7 +82,7 @@ app.get("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 app.get("/appointment", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma.$connect;
+    yield prisma.$connect();
     const appointments = yield prisma.appointment.findMany();
     res.json(appointments);
 }));
@@ -142,6 +142,7 @@ app.post("/service", (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.send("Error encountered, check terminal for more info");
     });
 }));
+//POST add appointment
 app.post("/appointment", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.$connect();
     const appointment_info = {
@@ -154,6 +155,28 @@ app.post("/appointment", (req, res) => __awaiter(void 0, void 0, void 0, functio
         data: appointment_info
     }).then(() => {
         res.send("Appointment added to database!");
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
+    });
+}));
+//PUT REQUESTS
+//PUT update barber
+app.put("/barber/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const { id } = req.params;
+    const barber_data = {
+        barberFirstName: req.body.barberFirstName,
+        barberLastName: req.body.barberLastName,
+        barberPhoneNum: req.body.barberPhoneNum,
+        barberStatus: req.body.barberStatus, //Remember from schema.prisma, it can only be "ACTIVE" or "INACTIVE"
+    };
+    const updateBarber = yield prisma.barber.update({
+        where: { id: Number(id) },
+        data: barber_data
+    }).then(() => {
+        res.send(`Barber ID: ${id} has been updated`);
     })
         .catch((error) => {
         console.log(error);

@@ -11,7 +11,7 @@ datasource db {
 }
 
 //Enum Values
-enum BarberStatus {
+enum BarberStatus {  //And I know using enums isn't good, but I'm just using this for the demonstration
   ACTIVE
   INACTIVE
 }
