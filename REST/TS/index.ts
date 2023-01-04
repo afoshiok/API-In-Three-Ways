@@ -66,7 +66,7 @@ app.get("/service", async (req: Request, res: Response) => {
 
 //GET Service by ID
 app.get("/service/:id", async (req: Request, res: Response) => {
-    await prisma.$connect
+    await prisma.$connect()
     const { id } = req.params
     try {
         const service_info = await prisma.service.findUnique({
@@ -80,7 +80,7 @@ app.get("/service/:id", async (req: Request, res: Response) => {
 })
 
 app.get("/appointment", async (req: Request, res: Response) => {
-    await prisma.$connect
+    await prisma.$connect()
     const appointments = await prisma.appointment.findMany()
     res.json(appointments)
 })
@@ -165,6 +165,12 @@ app.post("/appointment", async (req: Request, res: Response) => {
         console.log(error)
         res.send("Error encountered, check terminal for more info")
     })
+})
+
+//PUT REQUESTS
+
+app.put("/barber/:id", async (req: Request, res: Response) => {
+    await prisma.$connect()
 })
 
 app.listen(port, () => {
