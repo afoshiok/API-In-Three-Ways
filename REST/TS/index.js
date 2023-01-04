@@ -221,6 +221,26 @@ app.put("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
         res.send("Error encountered, check terminal for more info");
     });
 }));
+app.put("/appointment/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const { id } = req.params;
+    const appt_data = {
+        custId: req.body.custId,
+        barberId: req.body.barberId,
+        apptTime: new Date(req.body.apptTime),
+        serviceId: req.body.serviceId
+    };
+    yield prisma.appointment.update({
+        where: { id: Number(id) },
+        data: appt_data
+    }).then(() => {
+        res.send(`Appointment ID: ${id} has been updated`);
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
+    });
+}));
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`);
 });

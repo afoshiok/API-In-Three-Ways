@@ -214,6 +214,7 @@ app.put("/customer/:id", async (req: Request, res: Response) => {
     })
 })
 
+//PUT update service
 app.put("/service/:id", async (req: Request, res: Response) => {
     await prisma.$connect()
     const { id } = req.params
@@ -226,6 +227,28 @@ app.put("/service/:id", async (req: Request, res: Response) => {
         data: service_data
     }).then(() => {
         res.send(`Service ID: ${id} has been updated`)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
+})
+
+//PUT update appointment
+app.put("/appointment/:id", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const { id } = req.params
+    const appt_data = {
+        custId : req.body.custId,
+        barberId : req.body.barberId,
+        apptTime: new Date(req.body.apptTime), //Adds the time to the db in "YYYY-MM-DD HH:MM:SS" format but uses ISO-8601 for GET /appointment
+        serviceId: req.body.serviceId
+    }
+    await prisma.appointment.update({ //Same format as PUT barber
+        where: {id: Number(id)},
+        data: appt_data
+    }).then(() => {
+        res.send(`Appointment ID: ${id} has been updated`)
     })
     .catch((error) => {
         console.log(error)
