@@ -172,11 +172,31 @@ app.put("/barber/:id", (req, res) => __awaiter(void 0, void 0, void 0, function*
         barberPhoneNum: req.body.barberPhoneNum,
         barberStatus: req.body.barberStatus, //Remember from schema.prisma, it can only be "ACTIVE" or "INACTIVE"
     };
-    const updateBarber = yield prisma.barber.update({
+    yield prisma.barber.update({
         where: { id: Number(id) },
-        data: barber_data
+        data: barber_data //Updates the data based on request body
     }).then(() => {
         res.send(`Barber ID: ${id} has been updated`);
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
+    });
+}));
+//PUT update customer
+app.put("/customer/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const { id } = req.params;
+    const cust_data = {
+        custFirstName: req.body.custFirstName,
+        custLastName: req.body.custLastName,
+        custPhoneNum: req.body.custPhoneNum
+    };
+    yield prisma.customer.update({
+        where: { id: Number(id) },
+        data: cust_data
+    }).then(() => {
+        res.send(`Customer ID: ${id} has been updated`);
     })
         .catch((error) => {
         console.log(error);

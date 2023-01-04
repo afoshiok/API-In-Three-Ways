@@ -180,7 +180,7 @@ app.put("/barber/:id", async (req: Request, res: Response) => {
         barberPhoneNum: req.body.barberPhoneNum,
         barberStatus: req.body.barberStatus, //Remember from schema.prisma, it can only be "ACTIVE" or "INACTIVE"
     }
-    const updateBarber = await prisma.barber.update({
+    await prisma.barber.update({
         where: {id: Number(id)}, //Finds barber by ID 
         data: barber_data //Updates the data based on request body
     }).then(() => {
@@ -191,6 +191,28 @@ app.put("/barber/:id", async (req: Request, res: Response) => {
         res.send("Error encountered, check terminal for more info")
     })
 })
+
+//PUT update customer
+app.put("/customer/:id", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const { id } = req.params
+    const cust_data = {
+        custFirstName: req.body.custFirstName,
+        custLastName: req.body.custLastName,
+        custPhoneNum: req.body.custPhoneNum
+    }
+    await prisma.customer.update({ //Same format as PUT barber
+        where: {id: Number(id)},
+        data: cust_data
+    }).then(() => {
+        res.send(`Customer ID: ${id} has been updated`)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
+})
+
 
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`)
