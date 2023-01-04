@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv"
 import { PrismaClient } from "@prisma/client"; //https://www.prisma.io/docs/concepts/components/prisma-client/crud
 
+
 dotenv.config()
 
 const app: Express = express();
@@ -206,6 +207,25 @@ app.put("/customer/:id", async (req: Request, res: Response) => {
         data: cust_data
     }).then(() => {
         res.send(`Customer ID: ${id} has been updated`)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
+})
+
+app.put("/service/:id", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const { id } = req.params
+    const service_data = {
+        serviceName: req.body.serviceName,
+        servicePrice: req.body.servicePrice.toFixed(2)
+    }
+    await prisma.service.update({ //Same format as PUT barber
+        where: {id: Number(id)},
+        data: service_data
+    }).then(() => {
+        res.send(`Service ID: ${id} has been updated`)
     })
     .catch((error) => {
         console.log(error)
