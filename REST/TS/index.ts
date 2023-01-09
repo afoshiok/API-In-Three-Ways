@@ -288,6 +288,21 @@ app.delete("/customer/:id", async (req: Request, res: Response) => {
     })
 })
 
+//DELETE remove service
+app.delete("/service/:id", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const { id } = req.params
+    await prisma.service.delete({
+        where: {id: Number(id)}, //Deletes service with a matching ID
+    }).then(() => {
+        res.send(`Service with ID, ${id}, has been deleted.`)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
+})
+
 
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`)
