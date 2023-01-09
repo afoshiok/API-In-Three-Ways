@@ -277,9 +277,22 @@ app.delete("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, funct
     yield prisma.$connect();
     const { id } = req.params;
     yield prisma.service.delete({
-        where: { id: Number(id) }, //Deletes customer with a matching ID
+        where: { id: Number(id) }, //Deletes service with a matching ID
     }).then(() => {
         res.send(`Service with ID, ${id}, has been deleted.`);
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
+    });
+}));
+app.delete("/appointment/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const { id } = req.params;
+    yield prisma.appointment.delete({
+        where: { id: Number(id) }, //Deletes service with a matching ID
+    }).then(() => {
+        res.send(`Appointment with ID, ${id}, has been deleted.`);
     })
         .catch((error) => {
         console.log(error);
