@@ -203,6 +203,7 @@ app.put("/customer/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.send("Error encountered, check terminal for more info");
     });
 }));
+//PUT update service
 app.put("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.$connect();
     const { id } = req.params;
@@ -221,6 +222,7 @@ app.put("/service/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
         res.send("Error encountered, check terminal for more info");
     });
 }));
+//PUT update appointment
 app.put("/appointment/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma.$connect();
     const { id } = req.params;
@@ -235,6 +237,21 @@ app.put("/appointment/:id", (req, res) => __awaiter(void 0, void 0, void 0, func
         data: appt_data
     }).then(() => {
         res.send(`Appointment ID: ${id} has been updated`);
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
+    });
+}));
+//DELETE
+//DELETE remove barber
+app.delete("/barber/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const { id } = req.params;
+    yield prisma.barber.delete({
+        where: { id: Number(id) }, //Deletes barber with a matching ID
+    }).then(() => {
+        res.send(`Barber with ID, ${id}, has been deleted.`);
     })
         .catch((error) => {
         console.log(error);
