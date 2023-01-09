@@ -258,6 +258,20 @@ app.delete("/barber/:id", (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.send("Error encountered, check terminal for more info");
     });
 }));
+//DELETE remove customer
+app.delete("/customer/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.$connect();
+    const { id } = req.params;
+    yield prisma.customer.delete({
+        where: { id: Number(id) }, //Deletes customer with a matching ID
+    }).then(() => {
+        res.send(`Customer with ID, ${id}, has been deleted.`);
+    })
+        .catch((error) => {
+        console.log(error);
+        res.send("Error encountered, check terminal for more info");
+    });
+}));
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`);
 });

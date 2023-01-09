@@ -273,6 +273,21 @@ app.delete("/barber/:id", async (req: Request, res: Response) => {
     })
 })
 
+//DELETE remove customer
+app.delete("/customer/:id", async (req: Request, res: Response) => {
+    await prisma.$connect()
+    const { id } = req.params
+    await prisma.customer.delete({
+        where: {id: Number(id)}, //Deletes customer with a matching ID
+    }).then(() => {
+        res.send(`Customer with ID, ${id}, has been deleted.`)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.send("Error encountered, check terminal for more info")
+    })
+})
+
 
 app.listen(port, () => {
     console.log(`Your REST API is running on https://localhost:${port} 👍`)
